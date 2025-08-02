@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - نظام إدارة المحل</title>
+    <link rel="icon" href="data:,">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS code from previous response is here */
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --bg-color: #eef1f5;
+            --card-bg: #ffffff;
+            --border-color: #ddd;
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--dark);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-container p {
+            color: #777;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            text-align: right;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px 12px 40px; /* Adjust padding for icon */
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+            outline: none;
+        }
+        
+        .form-group .fas {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            pointer-events: none;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-dark);
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            .login-container h2 {
+                font-size: 1.5rem;
+            }
+            .btn-login {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>نظام إدارة المحل</h2>
+        <p>الرجاء تسجيل الدخول للمتابعة</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required>
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" required>
+                <i class="fas fa-lock"></i>
+            </div>
+            <div id="errorMessage" class="error-message"></div>
+            <button type="submit" class="btn-login">تسجيل الدخول</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // Use the Firebase config you provided earlier
+        const firebaseConfig = {
+            apiKey: "AIzaSyBU4lTFTliRRmn4eN9F9pP9SKQJilUsXlE",
+            authDomain: "supplies-system.firebaseapp.com",
+            projectId: "supplies-system",
+            storageBucket: "supplies-system.firebasestorage.app",
+            messagingSenderId: "205884975863",
+            appId: "1:205884975863:web:de65d32c2459f9979ac1f2",
+            measurementId: "G-2KSYJRKSCX"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // New logic to handle authentication status on the login page
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is already signed in, redirect them away from the login page
+                window.location.href = 'inventory.html';
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("User signed in:", user);
+                    window.location.href = 'inventory.html';
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const message = getErrorMessage(errorCode);
+                    errorMessage.textContent = message;
+                    errorMessage.style.display = 'block';
+                    console.error("Login Error:", errorCode);
+                });
+        });
+
+        function getErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/invalid-email':
+                    return 'البريد الإلكتروني الذي أدخلته غير صالح.';
+                case 'auth/user-not-found':
+                    return 'لا يوجد مستخدم بهذا البريد الإلكتروني.';
+                case 'auth/wrong-password':
+                    return 'كلمة المرور غير صحيحة.';
+                case 'auth/user-disabled':
+                    return 'تم تعطيل حسابك. الرجاء التواصل مع الدعم.';
+                default:
+                    return 'حدث خطأ أثناء تسجيل الدخول. الرجاء المحاولة مرة أخرى.';
+            }
+        }
+    </script>
+</body>
+</html>
