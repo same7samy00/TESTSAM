@@ -286,17 +286,17 @@
         function getErrorMessage(errorCode) {
             switch (errorCode) {
                 case 'auth/invalid-email':
-                    return 'البريد الإلكتروني الذي أدخلته غير صالح.';
+                    return '';
                 case 'auth/user-not-found':
-                    return 'لا يوجد مستخدم بهذا البريد الإلكتروني.';
+                    return '';
                 case 'auth/wrong-password':
-                    return 'كلمة المرور غير صحيحة.';
+                    return ';
                 case 'auth/user-disabled':
-                    return 'تم تعطيل حسابك. الرجاء التواصل مع الدعم.';
+                    return '';
                 case 'auth/too-many-requests':
-                    return 'تم إيقاف الوصول مؤقتًا بسبب العديد من محاولات الدخول الفاشلة. حاول مرة أخرى لاحقًا.';
+                    return '';
                 default:
-                    return 'حدث خطأ أثناء تسجيل الدخول. الرجاء المحاولة مرة أخرى.';
+                    return '';
             }
         }
 
